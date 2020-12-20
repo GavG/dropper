@@ -59,8 +59,11 @@
             width: var(--blockWidth);
             height: var(--blockHeight);
             position: absolute;
-            background-image: linear-gradient(0deg, #ffffff 25%, #ff4040 25%, #ff4040 50%, #ffffff 50%, #ffffff 75%, #ff4040 75%, #ff4040 100%);
             transition: all 0.3s ease 0s;
+        }
+
+        i.dirt {
+            background-color: rgb(88, 50, 0);
         }
         
         .modal {
@@ -115,9 +118,10 @@
     <script>
 
         class Level {
-            constructor(name, gameSpeed, blockMap) {
+            constructor(name, gameSpeed, blockClass, blockMap) {
                 this.name = name
                 this.gameSpeed = gameSpeed
+                this.blockClass = blockClass
                 this.blockMap = blockMap
             }
 
@@ -128,9 +132,10 @@
         }
 
         class Block {
-            constructor(x, y, index) {
+            constructor(x, y, blockClass, index) {
                 this.x = x
                 this.y = y
+                this.blockClass = blockClass
                 this.index = index
                 this.createElement()
                 this.locked = false
@@ -138,6 +143,7 @@
 
             createElement() {
                 this.element = document.createElement('i')
+                this.element.classList.add(this.blockClass)
                 this.updateStyle()
                 board.append(this.element)
             }
@@ -183,16 +189,21 @@
         let levelBegun = false
 
         let levels = [
-            new Level('Flat Land', 350, [
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            ])
+            new Level(
+                'Flat Land', 
+                350,
+                'dirt',
+                [
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                ]
+            )
         ]
 
         function addBlock() {
             if (isFreeSpace(blockStartingX, blockStartingY, this.index)) {
-                return blocks.push(new Block(blockStartingX, blockStartingY, blocks.length))
+                return blocks.push(new Block(blockStartingX, blockStartingY, levels[currentLevelIndex].blockClass,  blocks.length))
             }
             gameOver = true
         }
