@@ -16,8 +16,15 @@
             overflow: hidden;
         }
 
+        html {
+            background-color: #444;
+        }
+
         body {
             background-color: aqua;
+            max-width: 1000px;
+            margin: auto;
+            position: relative;
         }
 
         :root {
@@ -33,10 +40,12 @@
         }
 
         #dropper {
-            top: 0%;
+            top: 2px;
             left: 40%;
             z-index: 5;
-            background-color: purple;
+            border-top-left-radius: 50%;
+            border-top-right-radius: 50%;
+            background-color: gray;
             width: var(--blockWidth);
             height: var(--blockHeight);
             position: absolute;
@@ -51,9 +60,29 @@
             height: 100%;
             left: -100%;
             top: 50%;
-            background-color: purple;
+            background-color: rgb(39, 39, 39);
             border-top-left-radius: 50%;
             border-top-right-radius: 50%;
+        }
+
+        #dropper .portholes {
+            width: 300%;
+            height: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            z-index: 7;
+            position: absolute;
+            left: -100%;
+            top: 75%;
+            justify-content: space-around;
+        }
+
+        #dropper .portholes span {
+            border-radius: 50%;
+            background-color: yellowgreen;
+            height: 50%;
+            width: 16.5%;
+            margin: 2px;
         }
 
         #dropper .progress {
@@ -71,7 +100,7 @@
             height: 100%;
             z-index: 6;
             transition: width 0.3s linear;
-            background-color: green;
+            background-color: purple;
         }
 
         i {
@@ -130,6 +159,11 @@
 <body>
 
     <div id="dropper">
+        <div class="portholes">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
         <div class="progress">
             <div id="dropperProgress" class="progress-inner"></div>
         </div>
