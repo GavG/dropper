@@ -60,6 +60,39 @@
             background-image: linear-gradient(0deg, #ffffff 25%, #ff4040 25%, #ff4040 50%, #ffffff 50%, #ffffff 75%, #ff4040 75%, #ff4040 100%);
             transition: all 0.3s ease 0s;
         }
+        
+        .modal {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3;
+        }
+
+        .modal .modal-inner {
+            width: 90%;
+            max-width: 400px;
+            height: 40%;
+            max-height: 200px;
+            z-index: 3;
+            display: flex;
+            background-color: #ffffff55;
+            color: #111;
+            flex-wrap: wrap;
+            align-items: center;
+            font-size: 20px;
+        }
+
+        .modal .modal-inner span {
+            width: 100%;
+            padding: 5px;
+            text-align: center;
+        }
+
+        #levelPromptModal {
+            display: none;
+        }
     </style>
 
 </head>
@@ -69,6 +102,13 @@
     <div id="dropper"></div>
 
     <div id="board"></div>
+
+    <div id="levelPromptModal" class="modal">
+        <div class="modal-inner">
+            <span id="levelPromptName"></span>
+            <span>PRESS SPACE TO BEGIN</span>
+        </div>
+    </div>
 
     <script>
 
@@ -81,7 +121,7 @@
 
             start() {
                 gameSpeed = this.gameSpeed
-                console.log(this.name)
+                window.requestAnimationFrame(loop)
             }
         }
 
@@ -121,8 +161,11 @@
 
         let board = document.getElementById('board')
         let dropper = document.getElementById('dropper')
+        let levelPromptModal = document.getElementById('levelPromptModal')
+        let levePromptlName = document.getElementById('levelPromptName')
 
         let blocks = []
+        let moved = false
         let gameOver = false
         let gameSpeed = 0
         let lastRender = 0
@@ -133,6 +176,9 @@
         let blockMaxPosY = 100 - blockHeight
         let blockMinPosX = 0
         let blockMaxPosX = 100 - blockWidth
+
+        let currentLevelIndex = localStorage.getItem('currentLevelIndex') || 0
+        let levelBegun = false
 
         let levels = [
             new Level('Flat Land', 350, [
@@ -176,6 +222,8 @@
 
         window.addEventListener('keydown', function (e) {
             if (moved) return false
+            if (!levelBegun) return e.keyCode == 32 && beginLevel()
+
             switch (e.keyCode) {
                 case 37:
                     (() => {
@@ -201,11 +249,19 @@
             }
         })
 
-        levels[0].start()
+        function showNextLevelPrompt() {
+            levelPromptName.innerText = 'Level: ' + levels[currentLevelIndex].name
+            levelPromptModal.style.display = 'flex'
+            levelBegun = false
+        }
 
-        window.requestAnimationFrame(loop)
+        function beginLevel() {
+            levels[currentLevelIndex].start()
+            levelPromptModal.style.display = 'none'
+            levelBegun = true
+        }
 
-        addBlock()
+        showNextLevelPrompt()
 
     </script>
 
