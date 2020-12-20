@@ -35,6 +35,7 @@
         #dropper {
             top: 0%;
             left: 40%;
+            z-index: 5;
             background-color: purple;
             width: var(--blockWidth);
             height: var(--blockHeight);
@@ -45,7 +46,7 @@
         #dropper:after {
             content: '';
             position: absolute;
-            z-index: 2;
+            z-index: 5;
             width: 300%;
             height: 100%;
             left: -100%;
@@ -55,11 +56,35 @@
             border-top-right-radius: 50%;
         }
 
+        #dropper .progress {
+            position: absolute;
+            bottom: -50%;
+            z-index: 6;
+            left: -100%;
+            width: 300%;
+            height: 10%;
+            background-color: gray;
+        }
+
+        #dropper .progress .progress-inner {
+            width: 0%;
+            height: 100%;
+            z-index: 6;
+            transition: width 0.3s linear;
+            background-color: green;
+        }
+
         i {
             width: var(--blockWidth);
             height: var(--blockHeight);
             position: absolute;
             transition: all 0.3s ease 0s;
+            z-index: 3;
+        }
+
+        i.ghost-block {
+            z-index: 2;
+            background-color: gray;
         }
 
         i.dirt {
@@ -72,7 +97,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 3;
+            z-index: 10;
         }
 
         .modal .modal-inner {
@@ -80,7 +105,7 @@
             max-width: 400px;
             height: 40%;
             max-height: 200px;
-            z-index: 3;
+            z-index: 10;
             display: flex;
             background-color: #ffffff55;
             color: #111;
@@ -104,7 +129,11 @@
 
 <body>
 
-    <div id="dropper"></div>
+    <div id="dropper">
+        <div class="progress">
+            <div id="dropperProgress" class="progress-inner"></div>
+        </div>
+    </div>
 
     <div id="board"></div>
 
@@ -126,6 +155,18 @@
             }
 
             start() {
+                this.blockMap.reverse().forEach((row, y) => {
+                    row.forEach((space, x) => {
+                        if (space) {
+                            let ghostBlock = document.createElement('i')
+                            ghostBlock.classList.add('ghost-block')
+                            ghostBlock.style.bottom = (y * blockHeight) + '%'
+                            ghostBlock.style.left = (x * blockWidth) + '%'
+                            board.append(ghostBlock)
+                        }
+                    })
+                })
+
                 gameSpeed = this.gameSpeed
                 window.requestAnimationFrame(loop)
             }
@@ -169,6 +210,7 @@
 
         let board = document.getElementById('board')
         let dropper = document.getElementById('dropper')
+        let dropperProgress = document.getElementById('dropperProgress')
         let levelPromptModal = document.getElementById('levelPromptModal')
         let levePromptlName = document.getElementById('levelPromptName')
 
@@ -184,19 +226,19 @@
         let blockMaxPosY = 100 - blockHeight
         let blockMinPosX = 0
         let blockMaxPosX = 100 - blockWidth
+        let dropCount = 0
+        let dropRate = 4
 
         let currentLevelIndex = localStorage.getItem('currentLevelIndex') || 0
         let levelBegun = false
 
         let levels = [
             new Level(
-                'Flat Land', 
-                350,
+                'Flat Earth', 
+                500,
                 'dirt',
                 [
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
                 ]
             )
         ]
@@ -216,7 +258,16 @@
             blocks.forEach((block, index) => {
                 block.moveDown()
             })
-            addBlock()
+
+            dropCount += 1
+            dropperProgress.style.width = (dropCount / dropRate) * 100 + '%'
+            
+            if (dropCount > dropRate) {
+                addBlock()
+                dropCount = 0
+                dropperProgress.style.width = 0
+            }
+
             moved = false
         }
 
@@ -263,7 +314,7 @@
         })
 
         function showNextLevelPrompt() {
-            levelPromptName.innerText = 'Level: ' + levels[currentLevelIndex].name
+            levelPromptName.innerText = 'Level ' + (currentLevelIndex + 1) + ': ' + levels[currentLevelIndex].name
             levelPromptModal.style.display = 'flex'
             levelBegun = false
         }
