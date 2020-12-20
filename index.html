@@ -55,7 +55,6 @@
         i {
             width: var(--blockWidth);
             height: var(--blockHeight);
-            border-radius: 50%;
             position: absolute;
             background-image: linear-gradient(0deg, #ffffff 25%, #ff4040 25%, #ff4040 50%, #ffffff 50%, #ffffff 75%, #ff4040 75%, #ff4040 100%);
             transition: all 0.3s ease 0s;
@@ -73,20 +72,18 @@
 
     <script>
 
-        let board = document.getElementById('board')
-        let dropper = document.getElementById('dropper')
+class Level {
+            constructor(name, gameSpeed, blockMap) {
+                this.name = name
+                this.gameSpeed = gameSpeed
+                this.blockMap = blockMap
+            }
 
-        let blocks = []
-        let gameOver = false
-        let gameSpeed = 200
-        let lastRender = 0
-        let blockStartingX = 40
-        let blockStartingY = 0
-        let blockWidth = 5
-        let blockHeight = 5
-        let blockMaxPosY = 100 - blockHeight
-        let blockMinPosX = 0
-        let blockMaxPosX = 100 - blockWidth
+            start() {
+                gameSpeed = this.gameSpeed
+                console.log(this.name)
+            }
+        }
 
         class Block {
             constructor(x, y, index) {
@@ -121,6 +118,29 @@
                 this.updateStyle()
             }
         }
+
+        let board = document.getElementById('board')
+        let dropper = document.getElementById('dropper')
+
+        let blocks = []
+        let gameOver = false
+        let gameSpeed = 0
+        let lastRender = 0
+        let blockStartingX = 40
+        let blockStartingY = 0
+        let blockWidth = 5
+        let blockHeight = 5
+        let blockMaxPosY = 100 - blockHeight
+        let blockMinPosX = 0
+        let blockMaxPosX = 100 - blockWidth
+
+        let levels = [
+                new Level('Flat Land', 350, [
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                ])
+            ]
 
         function addBlock() {
             if (isFreeSpace(blockStartingX, blockStartingY, this.index)) {
@@ -180,6 +200,8 @@
                     break
             }
         })
+
+        levels[0].start()
 
         window.requestAnimationFrame(loop)
 
