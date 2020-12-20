@@ -24,7 +24,8 @@
         #board {
             height: calc(100% - var(--blockHeight));
             width: 100%;
-            top: var(--blockHeight);;
+            top: var(--blockHeight);
+            ;
             background-color: aqua;
             position: absolute;
         }
@@ -59,7 +60,6 @@
             background-image: linear-gradient(0deg, #ffffff 25%, #ff4040 25%, #ff4040 50%, #ffffff 50%, #ffffff 75%, #ff4040 75%, #ff4040 100%);
             transition: all 0.3s ease 0s;
         }
-
     </style>
 
 </head>
@@ -72,7 +72,7 @@
 
     <script>
 
-class Level {
+        class Level {
             constructor(name, gameSpeed, blockMap) {
                 this.name = name
                 this.gameSpeed = gameSpeed
@@ -135,12 +135,12 @@ class Level {
         let blockMaxPosX = 100 - blockWidth
 
         let levels = [
-                new Level('Flat Land', 350, [
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                ])
-            ]
+            new Level('Flat Land', 350, [
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            ])
+        ]
 
         function addBlock() {
             if (isFreeSpace(blockStartingX, blockStartingY, this.index)) {
